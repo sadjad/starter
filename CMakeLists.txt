@@ -9,26 +9,20 @@ include ( etc/clang_format.cmake )
 include ( etc/clang_tidy.cmake )
 
 file ( GLOB SOURCE
-    #src/benchmark/*
-    src/common/*
-    src/master/*
-    src/messages/*
-    src/net/*
-    src/remote/*
-    src/schedulers/*
-    #src/server/*
-    src/simulator/*
-    src/storage/*
-    src/util/*
-    src/worker/*
+  src/util/*
+  src/net/*
+  src/remote/*
+  src/schedulers/*
+  src/simulator/*
+  src/storage/*
 )
 
 include_directories ( src )
 
 add_library( starter STATIC
-    ${SOURCE}
+  ${SOURCE}
 )
 
 set ( ALL_LIBS
-    starter
+  starter
 )

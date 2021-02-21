@@ -21,7 +21,6 @@
 #include "exception.hh"
 #include "file_descriptor.hh"
 #include "temp_file.hh"
-#include "tokenize.hh"
 
 using namespace std;
 
