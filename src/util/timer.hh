@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdexcept>
 #include <array>
 #include <chrono>
 #include <optional>
