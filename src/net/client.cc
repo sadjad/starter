@@ -1,6 +1,8 @@
 #include "client.hh"
 
 #include "http_client.hh"
+#include "memcached.hh"
+#include "messages/message.hh"
 #include "session.hh"
 
 using namespace std;
@@ -24,7 +26,7 @@ template<class SessionType, class RequestType, class ResponseType>
 void Client<SessionType, RequestType, ResponseType>::install_rules(
   EventLoop& loop,
   const RuleCategories& rule_categories,
-  const function<void( ResponseType&& )>& response_callback,
+  const function<bool( ResponseType&& )>& response_callback,
   const function<void( void )>& close_callback,
   const optional<function<void()>>& exception_handler )
 {
@@ -50,33 +52,37 @@ void Client<SessionType, RequestType, ResponseType>::install_rules(
   if ( exception_handler ) {
     auto handler = *exception_handler;
 
-    socket_read_handler = [f = move( socket_read_handler ), h = handler] {
+    socket_read_handler = [this, h = handler] {
       try {
-        f();
+        session_.do_read();
       } catch ( exception& ) {
         h();
       }
     };
 
-    socket_write_handler = [f = move( socket_write_handler ), h = handler] {
+    socket_write_handler = [this, h = handler] {
       try {
-        f();
+        session_.do_write();
       } catch ( exception& ) {
         h();
       }
     };
 
-    endpoint_read_handler = [f = move( endpoint_read_handler ), h = handler] {
+    endpoint_read_handler = [this, h = handler] {
       try {
-        f();
+        read( session_.inbound_plaintext() );
       } catch ( exception& ) {
         h();
       }
     };
 
-    endpoint_write_handler = [f = move( endpoint_write_handler ), h = handler] {
+    endpoint_write_handler = [this, h = handler] {
       try {
-        f();
+        do {
+          write( session_.outbound_plaintext() );
+        } while (
+          ( not session_.outbound_plaintext().writable_region().empty() )
+          and ( not requests_empty() ) );
       } catch ( exception& ) {
         h();
       }
@@ -107,12 +113,23 @@ void Client<SessionType, RequestType, ResponseType>::install_rules(
     rule_categories.response,
     [this, response_callback] {
       while ( not responses_empty() ) {
-        response_callback( move( responses_front() ) );
+        auto response = move( responses_front() );
         responses_pop();
+
+        if ( not response_callback( move( response ) ) ) {
+          // pop all response
+          while ( not responses_empty() ) {
+            responses_pop();
+          }
+
+          return;
+        }
       }
     },
     [&] { return not responses_empty(); } ) );
 }
 
+template class Client<TCPSession, meow::Message, meow::Message>;
 template class Client<TCPSession, HTTPRequest, HTTPResponse>;
 template class Client<SSLSession, HTTPRequest, HTTPResponse>;
+template class Client<TCPSession, memcached::Request, memcached::Response>;

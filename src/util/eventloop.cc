@@ -11,7 +11,7 @@ using namespace std;
 
 size_t EventLoop::add_category( const string& name )
 {
-  _rule_categories.push_back( { name, {} } );
+  _rule_categories.emplace_back( name );
   return _rule_categories.size() - 1;
 }
 
@@ -139,7 +139,7 @@ EventLoop::RuleHandle EventLoop::add_rule( const size_t category_id,
   return _non_fd_rules.back();
 }
 
-void EventLoop::RuleHandle::cancel()
+void EventLoop::RuleHandle::cancel() const
 {
   const shared_ptr<BasicRule> rule_shared_ptr = rule_weak_ptr_.lock();
   if ( rule_shared_ptr ) {
@@ -266,6 +266,11 @@ EventLoop::Result EventLoop::wait_next_event( const int timeout_ms )
     auto& this_rule = *reinterpret_cast<FDRule*>( this_epoll_event.data.ptr );
     const uint32_t this_events = this_epoll_event.events;
 
+    if ( this_rule.cancel_requested ) {
+      // we will remove this rule in the next iteration of the event loop
+      continue;
+    }
+
     // check if we have an error
     if ( this_events & EPOLLERR ) {
       /* see if fd is a socket */
@@ -383,7 +388,7 @@ string EventLoop::summary() const
 
   for ( const auto& rule : _rule_categories ) {
     const auto& name = rule.name;
-    const auto& timer = rule.timer;
+    const auto& timer = *rule.timer;
 
     if ( timer.count == 0 )
       continue;

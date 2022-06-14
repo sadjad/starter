@@ -1,6 +1,7 @@
 #include "session.hh"
 
 #include "http_client.hh"
+#include "messages/message.hh"
 
 using namespace std;
 

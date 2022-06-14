@@ -1,9 +1,10 @@
 #pragma once
 
-#include <stdexcept>
 #include <array>
 #include <chrono>
+#include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <type_traits>
 
@@ -40,15 +41,20 @@ public:
     Nonblock,
     WaitingForEvent,
     LoadingTreelet,
-    count
+    AssigningWork,
+    COUNT,
   };
 
   constexpr static size_t num_categories
-    = static_cast<size_t>( Category::count );
+    = static_cast<size_t>( Category::COUNT );
 
-  constexpr static std::array<const char*, num_categories> _category_names {
-    { "DNS", "Nonblocking operations", "Waiting for event", "Loading treelet" }
-  };
+  constexpr static std::array<const char*, num_categories> _category_names { {
+    "DNS",
+    "Nonblocking operations",
+    "Waiting for event",
+    "Loading treelet",
+    "Assigning work",
+  } };
 
 private:
   uint64_t _beginning_timestamp = timestamp_ns();
@@ -105,8 +111,8 @@ class RecordScopeTimer
   uint64_t _start_time;
 
 public:
-  RecordScopeTimer( Timer::Record& timer )
-    : _timer( &timer )
+  RecordScopeTimer( std::unique_ptr<Timer::Record>& timer )
+    : _timer( timer.get() )
     , _start_time( Timer::timestamp_ns() )
   {
     global_timer().start<category>( _start_time );
