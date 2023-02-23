@@ -1,8 +1,6 @@
 #include "client.hh"
 
 #include "http_client.hh"
-#include "memcached.hh"
-#include "messages/message.hh"
 #include "session.hh"
 
 using namespace std;
@@ -129,7 +127,5 @@ void Client<SessionType, RequestType, ResponseType>::install_rules(
     [&] { return not responses_empty(); } ) );
 }
 
-template class Client<TCPSession, meow::Message, meow::Message>;
 template class Client<TCPSession, HTTPRequest, HTTPResponse>;
 template class Client<SSLSession, HTTPRequest, HTTPResponse>;
-template class Client<TCPSession, memcached::Request, memcached::Response>;
