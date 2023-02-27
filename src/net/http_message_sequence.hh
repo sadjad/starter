@@ -116,8 +116,7 @@ bool HTTPMessageSequence<MessageType>::parsing_step( std::string_view& buf )
 
     case BODY_PENDING: {
       size_t bytes_read = message_in_progress_.read_in_body( buf );
-      assert( bytes_read == buf.size()
-              or message_in_progress_.state() == COMPLETE );
+      assert( bytes_read == buf.size() or message_in_progress_.state() == COMPLETE );
       buf.remove_prefix( bytes_read );
     }
       return message_in_progress_.state() == COMPLETE;

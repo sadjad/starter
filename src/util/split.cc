@@ -5,9 +5,7 @@
 
 using namespace std;
 
-void split( const string_view str,
-            const char ch_to_find,
-            vector<string_view>& ret )
+void split( const string_view str, const char ch_to_find, vector<string_view>& ret )
 {
   ret.clear();
 

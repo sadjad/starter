@@ -31,10 +31,7 @@ void rename( const filesystem::path& oldpath, const filesystem::path& newpath )
   SystemCall( "rename", ::rename( oldpath.c_str(), newpath.c_str() ) );
 }
 
-void atomic_create( const string& contents,
-                    const filesystem::path& dst,
-                    const bool set_mode,
-                    const mode_t target_mode )
+void atomic_create( const string& contents, const filesystem::path& dst, const bool set_mode, const mode_t target_mode )
 {
   string tmp_file_name;
   {
@@ -60,9 +57,7 @@ void atomic_create( const string& contents,
 string read_file( const filesystem::path& pathn )
 {
   /* read input file into memory */
-  FileDescriptor in_file { SystemCall(
-    "open (" + pathn.string() + ")",
-    open( pathn.string().c_str(), O_RDONLY ) ) };
+  FileDescriptor in_file { SystemCall( "open (" + pathn.string() + ")", open( pathn.string().c_str(), O_RDONLY ) ) };
   struct stat pathn_info;
   SystemCall( "fstat", fstat( in_file.fd_num(), &pathn_info ) );
 
@@ -74,8 +69,7 @@ string read_file( const filesystem::path& pathn )
   contents.resize( pathn_info.st_size );
 
   for ( size_t index = 0; not in_file.eof() and index < contents.length(); ) {
-    index
-      += in_file.read( { contents.data() + index, contents.length() - index } );
+    index += in_file.read( { contents.data() + index, contents.length() - index } );
   }
 
   return contents;

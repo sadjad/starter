@@ -3,8 +3,7 @@
 
 using namespace std;
 
-void OpenSSL::check_errors( const std::string_view context,
-                            const bool must_have_error )
+void OpenSSL::check_errors( const std::string_view context, const bool must_have_error )
 {
   unsigned long first_error = ERR_get_error();
 
@@ -72,8 +71,7 @@ int tcpsocket_BIO_write( BIO* bio, const char* const buf, const int len )
     throw runtime_error( "ringbuffer_BIO_write: len < 0" );
   }
 
-  const size_t bytes_written
-    = sock->write( { buf, static_cast<size_t>( len ) } );
+  const size_t bytes_written = sock->write( { buf, static_cast<size_t>( len ) } );
 
   if ( bytes_written == 0 ) {
     BIO_set_retry_write( bio );

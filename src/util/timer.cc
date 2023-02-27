@@ -21,7 +21,8 @@ private:
 public:
   Value( T v )
     : value( v )
-  {}
+  {
+  }
   T get() const { return value; }
 };
 
@@ -43,10 +44,8 @@ string Timer::summary() const
 
   out << "Global timing summary:\n";
 
-  out << "  " << left << setw( WIDTH - 2 ) << "Total time" << fixed
-      << setprecision( 3 )
-      << Value<double>( ( now - _beginning_timestamp ) / BILLION )
-      << " seconds\n";
+  out << "  " << left << setw( WIDTH - 2 ) << "Total time" << fixed << setprecision( 3 )
+      << Value<double>( ( now - _beginning_timestamp ) / BILLION ) << " seconds\n";
 
   uint64_t accounted = 0;
 
@@ -54,12 +53,9 @@ string Timer::summary() const
     if ( _records.at( i ).count == 0 )
       continue;
 
-    out << "    " << setw( WIDTH - 4 ) << left
-        << string_view { _category_names.at( i ) }.substr( 0, WIDTH - 6 );
+    out << "    " << setw( WIDTH - 4 ) << left << string_view { _category_names.at( i ) }.substr( 0, WIDTH - 6 );
 
-    out << fixed << setprecision( 1 )
-        << Value<double>( 100 * _records.at( i ).total_ns / double( elapsed ) )
-        << "%";
+    out << fixed << setprecision( 1 ) << Value<double>( 100 * _records.at( i ).total_ns / double( elapsed ) ) << "%";
     accounted += _records.at( i ).total_ns;
 
     out << "\x1B[2m [max=" << pp_ns( _records.at( i ).max_ns );
@@ -69,8 +65,7 @@ string Timer::summary() const
 
   const uint64_t unaccounted = elapsed - accounted;
   out << "    " << setw( WIDTH - 4 ) << "Unaccounted";
-  out << fixed << setprecision( 1 )
-      << Value<double>( 100 * unaccounted / double( elapsed ) ) << "%\n";
+  out << fixed << setprecision( 1 ) << Value<double>( 100 * unaccounted / double( elapsed ) ) << "%\n";
 
   return out.str();
 }

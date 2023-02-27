@@ -26,11 +26,10 @@ public:
                 std::function<int()>&& child_procedure,
                 const int termination_signal = SIGHUP );
 
-  bool waitable( void ) const; /* is process in a waitable state? */
-  void wait( const bool nonblocking
-             = false );         /* wait for process to change state */
-  void signal( const int sig ); /* send signal */
-  void resume( void );          /* send SIGCONT */
+  bool waitable( void ) const;                 /* is process in a waitable state? */
+  void wait( const bool nonblocking = false ); /* wait for process to change state */
+  void signal( const int sig );                /* send signal */
+  void resume( void );                         /* send SIGCONT */
 
   const std::string& name( void ) const
   {

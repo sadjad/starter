@@ -13,8 +13,7 @@ class Timer
 public:
   static inline uint64_t timestamp_ns()
   {
-    static_assert( std::is_same<std::chrono::steady_clock::duration,
-                                std::chrono::nanoseconds>::value );
+    static_assert( std::is_same<std::chrono::steady_clock::duration, std::chrono::nanoseconds>::value );
 
     return std::chrono::steady_clock::now().time_since_epoch().count();
   }
@@ -45,8 +44,7 @@ public:
     COUNT,
   };
 
-  constexpr static size_t num_categories
-    = static_cast<size_t>( Category::COUNT );
+  constexpr static size_t num_categories = static_cast<size_t>( Category::COUNT );
 
   constexpr static std::array<const char*, num_categories> _category_names { {
     "DNS",
@@ -77,10 +75,8 @@ public:
   template<Category category>
   void stop( const uint64_t now = timestamp_ns() )
   {
-    if ( not _current_category.has_value()
-         or _current_category.value() != category ) {
-      throw std::runtime_error(
-        "timer stopped when not running, or with mismatched category" );
+    if ( not _current_category.has_value() or _current_category.value() != category ) {
+      throw std::runtime_error( "timer stopped when not running, or with mismatched category" );
     }
 
     _records[static_cast<size_t>( category )].log( now - _start_time );

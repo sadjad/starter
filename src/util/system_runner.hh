@@ -19,7 +19,6 @@ std::string run( const std::string& filename,
                  const bool read_stdout_until_eof = false,
                  const bool suppress_errors = false );
 
-std::string command_str( const std::vector<std::string>& command,
-                         const std::vector<std::string>& environment );
+std::string command_str( const std::vector<std::string>& command, const std::vector<std::string>& environment );
 
 std::string command_str( const int argc, char* argv[] );

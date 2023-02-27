@@ -29,19 +29,17 @@ UniqueFile::UniqueFile( const string& filename_template )
   : mutable_temp_filename_( to_mutable( filename_template + ".XXXXXX" ) )
   , fd_( SystemCall( "mkstemp", mkstemp( &mutable_temp_filename_[0] ) ) )
   , moved_away_( false )
-{}
+{
+}
 
 /* allow caller to specify filename, but enforce prior nonexistence */
-UniqueFile::UniqueFile( const string& filename_prefix,
-                        const string& filename_suffix )
-  : mutable_temp_filename_(
-    to_mutable( filename_prefix + "." + filename_suffix ) )
+UniqueFile::UniqueFile( const string& filename_prefix, const string& filename_suffix )
+  : mutable_temp_filename_( to_mutable( filename_prefix + "." + filename_suffix ) )
   , fd_( SystemCall( "open (" + filename_prefix + "." + filename_suffix + ")",
-                     open( &mutable_temp_filename_.front(),
-                           O_RDWR | O_CREAT | O_EXCL,
-                           S_IRUSR | S_IWUSR ) ) )
+                     open( &mutable_temp_filename_.front(), O_RDWR | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR ) ) )
   , moved_away_( false )
-{}
+{
+}
 
 /* unlike UniqueFile, a TempFile is deleted when object destroyed */
 TempFile::~TempFile()
@@ -75,6 +73,5 @@ UniqueFile::UniqueFile( UniqueFile&& other )
 string UniqueFile::name( void ) const
 {
   assert( mutable_temp_filename_.size() > 1 );
-  return string( mutable_temp_filename_.begin(),
-                 mutable_temp_filename_.end() - 1 );
+  return string( mutable_temp_filename_.begin(), mutable_temp_filename_.end() - 1 );
 }

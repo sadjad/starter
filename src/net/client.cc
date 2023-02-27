@@ -8,7 +8,8 @@ using namespace std;
 template<class SessionType, class RequestType, class ResponseType>
 Client<SessionType, RequestType, ResponseType>::Client( SessionType&& session )
   : session_( move( session ) )
-{}
+{
+}
 
 template<class SessionType, class RequestType, class ResponseType>
 void Client<SessionType, RequestType, ResponseType>::uninstall_rules()
@@ -37,14 +38,12 @@ void Client<SessionType, RequestType, ResponseType>::install_rules(
   CallbackT socket_read_handler = [this] { session_.do_read(); };
   CallbackT socket_write_handler = [this] { session_.do_write(); };
 
-  CallbackT endpoint_read_handler
-    = [this] { read( session_.inbound_plaintext() ); };
+  CallbackT endpoint_read_handler = [this] { read( session_.inbound_plaintext() ); };
 
   CallbackT endpoint_write_handler = [this] {
     do {
       write( session_.outbound_plaintext() );
-    } while ( ( not session_.outbound_plaintext().writable_region().empty() )
-              and ( not requests_empty() ) );
+    } while ( ( not session_.outbound_plaintext().writable_region().empty() ) and ( not requests_empty() ) );
   };
 
   if ( exception_handler ) {
@@ -78,9 +77,7 @@ void Client<SessionType, RequestType, ResponseType>::install_rules(
       try {
         do {
           write( session_.outbound_plaintext() );
-        } while (
-          ( not session_.outbound_plaintext().writable_region().empty() )
-          and ( not requests_empty() ) );
+        } while ( ( not session_.outbound_plaintext().writable_region().empty() ) and ( not requests_empty() ) );
       } catch ( exception& ) {
         h();
       }
@@ -96,16 +93,13 @@ void Client<SessionType, RequestType, ResponseType>::install_rules(
     [&] { return session_.want_write(); },
     close_callback ) );
 
-  installed_rules_.push_back(
-    loop.add_rule( rule_categories.endpoint_write, endpoint_write_handler, [&] {
-      return ( not session_.outbound_plaintext().writable_region().empty() )
-             and ( not requests_empty() );
-    } ) );
+  installed_rules_.push_back( loop.add_rule( rule_categories.endpoint_write, endpoint_write_handler, [&] {
+    return ( not session_.outbound_plaintext().writable_region().empty() ) and ( not requests_empty() );
+  } ) );
 
-  installed_rules_.push_back(
-    loop.add_rule( rule_categories.endpoint_read, endpoint_read_handler, [&] {
-      return not session_.inbound_plaintext().readable_region().empty();
-    } ) );
+  installed_rules_.push_back( loop.add_rule( rule_categories.endpoint_read, endpoint_read_handler, [&] {
+    return not session_.inbound_plaintext().readable_region().empty();
+  } ) );
 
   installed_rules_.push_back( loop.add_rule(
     rule_categories.response,

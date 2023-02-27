@@ -46,7 +46,8 @@ private:
 
     RuleCategory( const std::string& n )
       : name( n )
-    {}
+    {
+    }
   };
 
   struct BasicRule
@@ -62,9 +63,7 @@ private:
     InterestT interest;
     CallbackT callback;
 
-    Rule( const size_t category_id,
-          const InterestT& interest,
-          const CallbackT& callback );
+    Rule( const size_t category_id, const InterestT& interest, const CallbackT& callback );
   };
 
   struct FDRule : public BasicRule
@@ -108,8 +107,7 @@ private:
     }
   };
 
-  FileDescriptor _epoll_fd { SystemCall( "epoll_create1",
-                                         ::epoll_create1( 0 ) ) };
+  FileDescriptor _epoll_fd { SystemCall( "epoll_create1", ::epoll_create1( 0 ) ) };
   std::array<epoll_event, 512> _epoll_events {};
 
   std::vector<RuleCategory> _rule_categories {};
@@ -130,8 +128,8 @@ public:
   {
     Success, //!< At least one Rule was triggered.
     Timeout, //!< No rules were triggered before timeout.
-    Exit //!< All rules have been canceled or were uninterested; make no further
-         //!< calls to EventLoop::wait_next_event.
+    Exit     //!< All rules have been canceled or were uninterested; make no further
+             //!< calls to EventLoop::wait_next_event.
   };
 
   size_t add_category( const std::string& name );
@@ -144,7 +142,8 @@ public:
     template<class RuleType>
     RuleHandle( const std::shared_ptr<RuleType> x )
       : rule_weak_ptr_( x )
-    {}
+    {
+    }
 
     void cancel() const;
   };

@@ -39,7 +39,8 @@ public:
   /* allow move constructor */
   TempDirectory( TempDirectory&& other )
     : UniqueDirectory( std::move( other ) )
-  {}
+  {
+  }
 
   ~TempDirectory();
 };

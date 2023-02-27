@@ -7,13 +7,13 @@ using namespace std;
 template<>
 SessionBase<TCPSocket>::SessionBase( TCPSocket&& socket )
   : socket_( move( socket ) )
-{}
+{
+}
 
 template<>
 bool Session<TCPSocket>::want_read() const
 {
-  return ( not inbound_plaintext_.writable_region().empty() )
-         and ( not incoming_stream_terminated_ );
+  return ( not inbound_plaintext_.writable_region().empty() ) and ( not incoming_stream_terminated_ );
 }
 
 template<>
@@ -56,8 +56,7 @@ SessionBase<TCPSocketBIO>::SessionBase( SSL_handle&& ssl, TCPSocket&& sock )
   , socket_( move( sock ) )
 {
   if ( not ssl_ ) {
-    throw runtime_error(
-      "SecureSocket: constructor must be passed valid SSL structure" );
+    throw runtime_error( "SecureSocket: constructor must be passed valid SSL structure" );
   }
 
   SSL_set0_rbio( ssl_.get(), socket_ );
@@ -77,16 +76,14 @@ int SessionBase<TCPSocketBIO>::get_error( const int return_value ) const
 template<>
 bool Session<TCPSocketBIO>::want_read() const
 {
-  return ( not read_waiting_on_write_ )
-         and ( not inbound_plaintext_.writable_region().empty() )
+  return ( not read_waiting_on_write_ ) and ( not inbound_plaintext_.writable_region().empty() )
          and ( not incoming_stream_terminated_ );
 }
 
 template<>
 bool Session<TCPSocketBIO>::want_write() const
 {
-  return ( not write_waiting_on_read_ )
-         and ( not outbound_plaintext_.readable_region().empty() );
+  return ( not write_waiting_on_read_ ) and ( not outbound_plaintext_.readable_region().empty() );
 }
 
 template<>
@@ -97,8 +94,7 @@ void Session<TCPSocketBIO>::do_read()
   simple_string_span target = inbound_plaintext_.writable_region();
 
   const auto read_count_before = socket_.read_count();
-  const int bytes_read
-    = SSL_read( ssl_.get(), target.mutable_data(), target.size() );
+  const int bytes_read = SSL_read( ssl_.get(), target.mutable_data(), target.size() );
   const auto read_count_after = socket_.read_count();
 
   if ( read_count_after > read_count_before or bytes_read > 0 ) {
@@ -138,8 +134,7 @@ void Session<TCPSocketBIO>::do_write()
   const string_view source = outbound_plaintext_.readable_region();
 
   const auto write_count_before = socket_.write_count();
-  const int bytes_written
-    = SSL_write( ssl_.get(), source.data(), source.size() );
+  const int bytes_written = SSL_write( ssl_.get(), source.data(), source.size() );
   const auto write_count_after = socket_.write_count();
 
   if ( write_count_after > write_count_before or bytes_written > 0 ) {
@@ -176,8 +171,7 @@ size_t SimpleSSLSession::read( simple_string_span buffer )
 {
   OpenSSL::check( "SimpleSSLSession::rread()" );
 
-  const int bytes_read
-    = SSL_read( ssl_.get(), buffer.mutable_data(), buffer.size() );
+  const int bytes_read = SSL_read( ssl_.get(), buffer.mutable_data(), buffer.size() );
 
   if ( bytes_read > 0 ) {
     return bytes_read;
@@ -193,8 +187,7 @@ size_t SimpleSSLSession::write( const string_view buffer )
 {
   OpenSSL::check( "SimpleSSLSession::write()" );
 
-  const int bytes_written
-    = SSL_write( ssl_.get(), buffer.data(), buffer.size() );
+  const int bytes_written = SSL_write( ssl_.get(), buffer.data(), buffer.size() );
 
   if ( bytes_written > 0 ) {
     return bytes_written;

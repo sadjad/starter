@@ -14,9 +14,9 @@ class EventFD : public FileDescriptor
 {
 public:
   EventFD( const bool semaphore = false )
-    : FileDescriptor(
-      eventfd( 0u, ( semaphore ? EFD_SEMAPHORE : 0 ) | EFD_NONBLOCK ) )
-  {}
+    : FileDescriptor( eventfd( 0u, ( semaphore ? EFD_SEMAPHORE : 0 ) | EFD_NONBLOCK ) )
+  {
+  }
 
   bool read_event()
   {

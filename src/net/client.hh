@@ -38,12 +38,11 @@ public:
 
   SessionType& session() { return session_; }
 
-  void install_rules(
-    EventLoop& loop,
-    const RuleCategories& rule_categories,
-    const std::function<bool( ResponseType&& )>& response_callback,
-    const std::function<void( void )>& close_callback,
-    const std::optional<std::function<void()>>& exception_handler = {} );
+  void install_rules( EventLoop& loop,
+                      const RuleCategories& rule_categories,
+                      const std::function<bool( ResponseType&& )>& response_callback,
+                      const std::function<void( void )>& close_callback,
+                      const std::optional<std::function<void()>>& exception_handler = {} );
 
   void uninstall_rules();
 };

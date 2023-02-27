@@ -30,8 +30,7 @@ int do_fork()
     SystemCall( "stat", stat( "/proc/self/task", &my_stat ) );
 
     if ( my_stat.st_nlink != 3 ) {
-      throw runtime_error(
-        "ChildProcess constructed in multi-threaded program" );
+      throw runtime_error( "ChildProcess constructed in multi-threaded program" );
     }
   }
 
@@ -40,9 +39,7 @@ int do_fork()
 
 /* start up a child process running the supplied lambda */
 /* the return value of the lambda is the child's exit status */
-ChildProcess::ChildProcess( const string& name,
-                            function<int()>&& child_procedure,
-                            const int termination_signal )
+ChildProcess::ChildProcess( const string& name, function<int()>&& child_procedure, const int termination_signal )
   : name_( name )
   , pid_( do_fork() )
   , running_( true )
@@ -71,19 +68,14 @@ bool ChildProcess::waitable( void ) const
 
   siginfo_t infop;
   zero( infop );
-  SystemCall( "waitid",
-              waitid( P_PID,
-                      pid_,
-                      &infop,
-                      WEXITED | WSTOPPED | WCONTINUED | WNOHANG | WNOWAIT ) );
+  SystemCall( "waitid", waitid( P_PID, pid_, &infop, WEXITED | WSTOPPED | WCONTINUED | WNOHANG | WNOWAIT ) );
 
   if ( infop.si_pid == 0 ) {
     return false;
   } else if ( infop.si_pid == pid_ ) {
     return true;
   } else {
-    throw runtime_error(
-      "waitid: unexpected value in siginfo_t si_pid field (not 0 or pid)" );
+    throw runtime_error( "waitid: unexpected value in siginfo_t si_pid field (not 0 or pid)" );
   }
 }
 
@@ -95,12 +87,8 @@ void ChildProcess::wait( const bool nonblocking )
 
   siginfo_t infop;
   zero( infop );
-  SystemCall(
-    "waitid",
-    waitid( P_PID,
-            pid_,
-            &infop,
-            WEXITED | WSTOPPED | WCONTINUED | ( nonblocking ? WNOHANG : 0 ) ) );
+  SystemCall( "waitid",
+              waitid( P_PID, pid_, &infop, WEXITED | WSTOPPED | WCONTINUED | ( nonblocking ? WNOHANG : 0 ) ) );
 
   if ( nonblocking and ( infop.si_pid == 0 ) ) {
     throw runtime_error( "nonblocking wait: process was not waitable" );
@@ -111,8 +99,7 @@ void ChildProcess::wait( const bool nonblocking )
   }
 
   if ( infop.si_signo != SIGCHLD ) {
-    throw runtime_error(
-      "waitid: unexpected value in siginfo_t si_signo field (not SIGCHLD)" );
+    throw runtime_error( "waitid: unexpected value in siginfo_t si_signo field (not SIGCHLD)" );
   }
 
   /* how did the process change state? */
@@ -194,8 +181,6 @@ ChildProcess::ChildProcess( ChildProcess&& other )
 void ChildProcess::throw_exception( void ) const
 {
   throw runtime_error( "`" + name() + "': process "
-                       + ( died_on_signal()
-                             ? string( "died on signal " )
-                             : string( "exited with failure status " ) )
+                       + ( died_on_signal() ? string( "died on signal " ) : string( "exited with failure status " ) )
                        + to_string( exit_status() ) );
 }

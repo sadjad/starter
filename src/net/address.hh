@@ -29,9 +29,7 @@ private:
                    //!< containing the address.
 
   //! Constructor from ip/host, service/port, and hints to the resolver.
-  Address( const std::string& node,
-           const std::string& service,
-           const addrinfo& hints );
+  Address( const std::string& node, const std::string& service, const addrinfo& hints );
 
 public:
   //! Construct by resolving a hostname and servicename.
@@ -45,10 +43,7 @@ public:
 
   //! Equality comparison.
   bool operator==( const Address& other ) const;
-  bool operator!=( const Address& other ) const
-  {
-    return not operator==( other );
-  }
+  bool operator!=( const Address& other ) const { return not operator==( other ); }
 
   //! \name Conversions
   //!@{
@@ -67,8 +62,7 @@ public:
   //! Human-readable string, e.g., "8.8.8.8:53".
   std::string to_string() const;
 
-  static std::pair<std::string, uint16_t> decompose(
-    const std::string& ip_port );
+  static std::pair<std::string, uint16_t> decompose( const std::string& ip_port );
   //!@}
 
   //! \name Low-level operations

@@ -12,8 +12,7 @@ MIMEType::MIMEType( const string_view content_type )
 {
   vector<string_view> type_and_parameters;
   split( content_type, ';', type_and_parameters );
-  if ( type_and_parameters.size() == 0
-       or type_and_parameters.at( 0 ).empty() ) {
+  if ( type_and_parameters.size() == 0 or type_and_parameters.at( 0 ).empty() ) {
     throw runtime_error( "MIMEType: invalid MIME media-type string" );
   }
 

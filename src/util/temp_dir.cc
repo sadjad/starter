@@ -45,6 +45,5 @@ UniqueDirectory::UniqueDirectory( UniqueDirectory&& other )
 string UniqueDirectory::name( void ) const
 {
   assert( mutable_temp_dirname_.size() > 1 );
-  return string( mutable_temp_dirname_.begin(),
-                 mutable_temp_dirname_.end() - 1 );
+  return string( mutable_temp_dirname_.begin(), mutable_temp_dirname_.end() - 1 );
 }

@@ -47,8 +47,7 @@ size_t ChunkedBodyParser::read( const std::string_view input_buffer )
         auto it = parser_buffer_view.find( "\r\n" );
         if ( it != string::npos ) {
           /* if you have CRLF, get chunk size & transition to CHUNK/TRAILER */
-          current_chunk_size_
-            = get_chunk_size( parser_buffer_view.substr( 0, it + 2 ) );
+          current_chunk_size_ = get_chunk_size( parser_buffer_view.substr( 0, it + 2 ) );
 
           /* Transition appropriately */
           state_ = ( current_chunk_size_ == 0 ) ? TRAILER : CHUNK;
@@ -67,16 +66,14 @@ size_t ChunkedBodyParser::read( const std::string_view input_buffer )
       case CHUNK: {
         if ( parser_buffer_view.length() >= current_chunk_size_ + 2 ) {
           /* accumulated enough bytes, check CRLF at the end of the chunk */
-          assert( parser_buffer_view.substr( current_chunk_size_, 2 )
-                  == "\r\n" );
+          assert( parser_buffer_view.substr( current_chunk_size_, 2 ) == "\r\n" );
 
           /* Transition to next state */
           state_ = CHUNK_HDR;
 
           /* shrink parser_buffer_ */
           parsed_so_far_ += current_chunk_size_ + 2;
-          parser_buffer_view
-            = parser_buffer_view.substr( current_chunk_size_ + 2 );
+          parser_buffer_view = parser_buffer_view.substr( current_chunk_size_ + 2 );
           break;
         } else {
           /* Haven't seen enough bytes so far, do nothing */
@@ -88,12 +85,10 @@ size_t ChunkedBodyParser::read( const std::string_view input_buffer )
       case TRAILER: {
         if ( trailers_enabled_ ) {
           /* We need two consecutive CRLFs */
-          return compute_ack_size(
-            parser_buffer_view, "\r\n\r\n", input_buffer.length() );
+          return compute_ack_size( parser_buffer_view, "\r\n\r\n", input_buffer.length() );
         } else {
           /* We need only one CRLF now */
-          return compute_ack_size(
-            parser_buffer_view, "\r\n", input_buffer.length() );
+          return compute_ack_size( parser_buffer_view, "\r\n", input_buffer.length() );
         }
       }
 

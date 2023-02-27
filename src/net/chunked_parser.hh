@@ -36,5 +36,6 @@ public:
 
   ChunkedBodyParser( bool t_trailers_enabled )
     : trailers_enabled_( t_trailers_enabled )
-  {}
+  {
+  }
 };

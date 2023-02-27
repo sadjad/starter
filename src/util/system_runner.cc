@@ -79,8 +79,7 @@ int ezexec( const string& filename,
     envp.push_back( 0 ); /* null-terminate */
   }
 
-  return ( path_search ? execvpe : execve )(
-    filename.c_str(), &argv[0], use_environ ? environ : &envp[0] );
+  return ( path_search ? execvpe : execve )( filename.c_str(), &argv[0], use_environ ? environ : &envp[0] );
 }
 
 string run( const string& filename,
@@ -105,8 +104,7 @@ string run( const string& filename,
     }
 
     if ( suppress_errors ) {
-      FileDescriptor devnull { SystemCall( "open /dev/null",
-                                           open( "/dev/null", O_RDONLY ) ) };
+      FileDescriptor devnull { SystemCall( "open /dev/null", open( "/dev/null", O_RDONLY ) ) };
       SystemCall( "dup2", dup2( devnull.fd_num(), STDERR_FILENO ) );
     }
 
@@ -134,8 +132,7 @@ string run( const string& filename,
   return output;
 }
 
-string command_str( const vector<string>& command,
-                    const vector<string>& environment )
+string command_str( const vector<string>& command, const vector<string>& environment )
 {
   ostringstream oss;
 

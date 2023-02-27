@@ -63,10 +63,7 @@ public:
   RingBuffer& outbound_plaintext() { return outbound_plaintext_; }
   RingBuffer& inbound_plaintext() { return inbound_plaintext_; }
 
-  bool incoming_stream_terminated() const
-  {
-    return incoming_stream_terminated_;
-  }
+  bool incoming_stream_terminated() const { return incoming_stream_terminated_; }
 
   // disallow copying
   Session( const Session& ) = delete;

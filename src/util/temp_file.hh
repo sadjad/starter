@@ -23,8 +23,7 @@ public:
   UniqueFile( const std::string& filename_template );
 
   /* allow caller to specify filename, but enforce prior nonexistence */
-  UniqueFile( const std::string& filename_prefix,
-              const std::string& filename_suffix );
+  UniqueFile( const std::string& filename_prefix, const std::string& filename_suffix );
 
   virtual ~UniqueFile() {}
 
@@ -54,7 +53,8 @@ public:
   /* allow move constructor */
   TempFile( TempFile&& other )
     : UniqueFile( std::move( other ) )
-  {}
+  {
+  }
 
   ~TempFile();
 };
