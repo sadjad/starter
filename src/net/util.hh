@@ -2,6 +2,7 @@
 
 #include <endian.h>
 
+#include <cstdint>
 #include <cstring>
 #include <stdexcept>
 #include <string>

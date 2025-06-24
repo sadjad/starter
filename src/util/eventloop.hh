@@ -173,10 +173,8 @@ public:
     const InterestT& out_interest,
     const CallbackT& cancel = [] {} );
 
-  RuleHandle add_rule(
-    const size_t category_id,
-    const CallbackT& callback,
-    const InterestT& interest = [] { return true; } );
+  RuleHandle
+  add_rule( const size_t category_id, const CallbackT& callback, const InterestT& interest = [] { return true; } );
 
   void set_fd_failure_callback( const CallbackT& callback );
 
